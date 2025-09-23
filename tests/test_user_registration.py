@@ -1,12 +1,12 @@
 import pytest
 import requests
 import uuid
-
-BASE_URL = "https://stellarburgers.nomoreparties.site/api"
+import allure
+from urls import BASE_URL
 
 class TestUserRegistration:
+    @allure.title("Создание уникального пользователя")
     def test_create_unique_user(self):
-        """Создание уникального пользователя."""
         email = f"unique-{uuid.uuid4()}@yandex.ru"
         response = requests.post(f"{BASE_URL}/auth/register", json={
             "email": email,
@@ -19,8 +19,8 @@ class TestUserRegistration:
         assert "accessToken" in data
         # Удаление после (если нужно, вызовите фикстуру или API)
 
+    @allure.title("Создание пользователя, который уже зарегистрирован")
     def test_create_existing_user(self):
-        """Создание пользователя, который уже зарегистрирован."""
         email = "existing@test.com"  # Предполагаем существующий
         response = requests.post(f"{BASE_URL}/auth/register", json={
             "email": email,
@@ -32,8 +32,8 @@ class TestUserRegistration:
         assert data["success"] is False
         assert data["message"] == "User already exists"
 
+    @allure.title("Создание пользователя без обязательного поля (email)")
     def test_create_user_missing_field(self):
-        """Создание пользователя без обязательного поля (email)."""
         response = requests.post(f"{BASE_URL}/auth/register", json={
             "password": "password",
             "name": "MissingEmail"

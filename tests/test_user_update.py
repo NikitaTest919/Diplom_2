@@ -1,11 +1,11 @@
 import pytest
 import requests
-
-BASE_URL = "https://stellarburgers.nomoreparties.site/api"
+import allure
+from urls import BASE_URL
 
 class TestUserUpdate:
+    @allure.title("Изменение данных с авторизацией (email)")
     def test_update_user_with_auth(self, create_and_delete_user):
-        """Изменение данных с авторизацией (email)."""
         user = create_and_delete_user
         headers = {"Authorization": user["access_token"]}
         response = requests.patch(f"{BASE_URL}/auth/user", headers=headers, json={
@@ -16,8 +16,8 @@ class TestUserUpdate:
         assert data["success"] is True
         assert data["user"]["email"] == f"updated-{user['email']}"
 
+    @allure.title("Изменение данных без авторизации")
     def test_update_user_without_auth(self):
-        """Изменение данных без авторизации."""
         response = requests.patch(f"{BASE_URL}/auth/user", json={
             "email": "noauth@test.com"
         })
@@ -26,9 +26,8 @@ class TestUserUpdate:
         assert data["success"] is False
         assert data["message"] == "You should be authorised"
 
-    # Аналогично для name и других полей
+    @allure.title("Изменение на существующий email")
     def test_update_user_existing_email(self, create_and_delete_user):
-        """Изменение на существующий email."""
         user = create_and_delete_user
         headers = {"Authorization": user["access_token"]}
         response = requests.patch(f"{BASE_URL}/auth/user", headers=headers, json={

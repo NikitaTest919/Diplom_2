@@ -1,11 +1,11 @@
 import pytest
 import requests
-
-BASE_URL = "https://stellarburgers.nomoreparties.site/api"
+import allure
+from urls import BASE_URL
 
 class TestOrderRetrieval:
+    @allure.title("Получение заказов авторизованного пользователя")
     def test_get_orders_authorized(self, create_and_delete_user):
-        """Получение заказов авторизованного пользователя."""
         user = create_and_delete_user
         headers = {"Authorization": user["access_token"]}
         response = requests.get(f"{BASE_URL}/orders", headers=headers)
@@ -14,8 +14,8 @@ class TestOrderRetrieval:
         assert data["success"] is True
         assert "orders" in data  # Предполагаем структуру
 
+    @allure.title("Получение заказов неавторизованного пользователя")
     def test_get_orders_unauthorized(self):
-        """Получение заказов неавторизованного пользователя."""
         response = requests.get(f"{BASE_URL}/orders")
         assert response.status_code == 401
         data = response.json()

@@ -1,11 +1,11 @@
 import pytest
 import requests
-
-BASE_URL = "https://stellarburgers.nomoreparties.site/api"
+import allure
+from urls import BASE_URL
 
 class TestUserLogin:
+    @allure.title("Логин под существующим пользователем")
     def test_login_existing_user(self, create_and_delete_user):
-        """Логин под существующим пользователем."""
         user = create_and_delete_user
         response = requests.post(f"{BASE_URL}/auth/login", json={
             "email": user["email"],
@@ -16,8 +16,8 @@ class TestUserLogin:
         assert data["success"] is True
         assert "accessToken" in data
 
+    @allure.title("Логин с неверным логином и паролем")
     def test_login_invalid_credentials(self):
-        """Логин с неверным логином и паролем."""
         response = requests.post(f"{BASE_URL}/auth/login", json={
             "email": "invalid@test.com",
             "password": "wrongpassword"

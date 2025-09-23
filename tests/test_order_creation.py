@@ -1,11 +1,11 @@
 import pytest
 import requests
-
-BASE_URL = "https://stellarburgers.nomoreparties.site/api"
+import allure
+from urls import BASE_URL
 
 class TestOrderCreation:
+    @allure.title("Создание заказа с авторизацией и ингредиентами")
     def test_create_order_with_auth_and_ingredients(self, create_and_delete_user):
-        """Создание заказа с авторизацией и ингредиентами."""
         user = create_and_delete_user
         headers = {"Authorization": user["access_token"], "Content-Type": "application/json"}
         # Получить ингредиенты
@@ -21,15 +21,15 @@ class TestOrderCreation:
         assert data["success"] is True
         assert "order" in data
 
+    @allure.title("Создание заказа без авторизации")
     def test_create_order_without_auth(self):
-        """Создание заказа без авторизации."""
         response = requests.post(f"{BASE_URL}/orders", json={
             "ingredients": ["61c0c5a71d1f82001bdaaa6c"]
         })
         assert response.status_code == 401  # Предполагаем, если API требует авторизацию
 
+    @allure.title("Создание заказа без ингредиентов")
     def test_create_order_without_ingredients(self, create_and_delete_user):
-        """Создание заказа без ингредиентов."""
         user = create_and_delete_user
         headers = {"Authorization": user["access_token"]}
         response = requests.post(f"{BASE_URL}/orders", headers=headers, json={
@@ -40,8 +40,8 @@ class TestOrderCreation:
         assert data["success"] is False
         assert data["message"] == "Ingredient ids must be provided"
 
+    @allure.title("Создание заказа с неверным хешем ингредиентов")
     def test_create_order_invalid_ingredient(self, create_and_delete_user):
-        """Создание заказа с неверным хешем ингредиентов."""
         user = create_and_delete_user
         headers = {"Authorization": user["access_token"]}
         response = requests.post(f"{BASE_URL}/orders", headers=headers, json={

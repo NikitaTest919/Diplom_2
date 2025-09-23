@@ -1,8 +1,7 @@
 import pytest
-import requests
-import uuid  # Для генерации уникальных email
-
-BASE_URL = "https://stellarburgers.nomoreparties.site/api"
+import uuid
+from urls import BASE_URL
+from data import create_user, delete_user
 
 @pytest.fixture(scope="function")
 def create_and_delete_user():
@@ -11,18 +10,16 @@ def create_and_delete_user():
     password = "password"
     name = "TestUser"
     
-    # Создание пользователя
-    response = requests.post(f"{BASE_URL}/auth/register", json={
-        "email": email,
-        "password": password,
-        "name": name
-    })
-    assert response.status_code == 200, "Не удалось создать тестового пользователя"
+    response = create_user(BASE_URL, email, password, name)
+    if response.status_code != 200:
+        pytest.skip("Не удалось создать тестового пользователя")
     user_data = response.json()
-    access_token = user_data["accessToken"]
+    access_token = user_data.get("accessToken")
     
     yield {"email": email, "password": password, "name": name, "access_token": access_token}
     
-    # Удаление пользователя (если есть эндпоинт для удаления; иначе пропустить)
-    # Предполагаем, что API не имеет удаления, но фикстура готова для расширения
-    # Если удаление нужно, добавьте код здесь
+    # Удаляем пользователя после теста
+    if access_token:
+        delete_response = delete_user(BASE_URL, access_token)
+        if delete_response.status_code != 202:
+            print(f"Warning: не удалось удалить пользователя: {delete_response.status_code} {delete_response.text}")
