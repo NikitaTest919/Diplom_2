@@ -1,11 +1,12 @@
 import pytest
+import allure
 import uuid
-from urls import BASE_URL
-from data import create_user, delete_user
+from Diplom_2.urls import BASE_URL
+from Diplom_2.api_request import create_user, delete_user
 
 @pytest.fixture(scope="function")
+@allure.title("Фикстура для создания уникального пользователя перед тестом и удаления после.")
 def create_and_delete_user():
-    """Фикстура для создания уникального пользователя перед тестом и удаления после."""
     email = f"test-{uuid.uuid4()}@yandex.ru"
     password = "password"
     name = "TestUser"

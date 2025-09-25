@@ -1,8 +1,8 @@
 import pytest
 import requests
 import allure
-from urls import BASE_URL
-from data import delete_user
+from Diplom_2.urls import BASE_URL
+from Diplom_2.api_request import delete_user
 
 class TestUserDeletion:
     @allure.title("Удаление пользователя с авторизацией должно проходить успешно")

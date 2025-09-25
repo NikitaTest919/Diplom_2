@@ -1,7 +1,7 @@
 import pytest
 import requests
 import allure
-from urls import BASE_URL
+from Diplom_2.urls import BASE_URL
 
 class TestUserLogin:
     @allure.title("Логин под существующим пользователем")

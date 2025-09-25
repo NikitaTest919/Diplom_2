@@ -1,6 +1,7 @@
-# data.py
 import requests
+import allure
 
+@allure.step("Создание нового пользователя")
 def create_user(base_url, email, password, name):
     response = requests.post(f"{base_url}/auth/register", json={
         "email": email,
@@ -9,6 +10,7 @@ def create_user(base_url, email, password, name):
     })
     return response
 
+@allure.step("Удаление пользователя")
 def delete_user(base_url, token):
     headers = {
         "Authorization": f"Bearer {token}"
